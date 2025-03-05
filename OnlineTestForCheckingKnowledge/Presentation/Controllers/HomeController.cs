@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OnlineTestForCheckingKnowledge.Models;
+using OnlineTestForCheckingKnowledge.Presentation.ViewModels;
 
-namespace OnlineTestForCheckingKnowledge.Controllers;
+namespace OnlineTestForCheckingKnowledge.Presentation.Controllers;
 
 public class HomeController : Controller
 {

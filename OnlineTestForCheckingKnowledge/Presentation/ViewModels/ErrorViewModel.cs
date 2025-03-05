@@ -1,4 +1,4 @@
-namespace OnlineTestForCheckingKnowledge.Models
+namespace OnlineTestForCheckingKnowledge.Presentation.ViewModels
 {
     public class ErrorViewModel
     {
