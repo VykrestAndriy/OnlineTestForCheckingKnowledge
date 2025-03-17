@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Business\Validation\" />
     <Folder Include="Data\Repositories\" />
     <Folder Include="Presentation\Views\" />
   </ItemGroup>
