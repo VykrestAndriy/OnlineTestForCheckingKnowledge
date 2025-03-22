@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTestForCheckingKnowledge.Business.DTOs;
 using OnlineTestForCheckingKnowledge.Business.Services;
-using OnlineTestForCheckingKnowledge.Data.Entities;
+using AutoMapper;
 
 namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
 {
@@ -19,24 +18,52 @@ namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateTest([FromBody] TestDto testDto)
+        [HttpGet]
+        public async Task<IActionResult> GetAllTests()
         {
-            var test = _mapper.Map<Test>(testDto);
-            var createdTest = await _testService.CreateTestAsync(test);
-            return CreatedAtAction(nameof(GetTestById), new { id = createdTest.Id }, createdTest);
+            var tests = await _testService.GetAllTestsAsync();
+            return Ok(tests);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTestById(int id)
         {
             var test = await _testService.GetTestByIdAsync(id);
-            if (test == null)
-            {
-                return NotFound();
-            }
+            if (test == null) return NotFound();
             return Ok(test);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateTest([FromBody] TestDto testDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var createdTest = await _testService.CreateTestAsync(testDto);
+            return CreatedAtAction(nameof(GetTestById), new { id = createdTest.Id }, createdTest);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTest(int id, [FromBody] TestDto testDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var updatedTest = await _testService.UpdateTestAsync(id, testDto);
+            if (updatedTest == null) return NotFound();
+            return Ok(updatedTest);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTest(int id)
+        {
+            var result = await _testService.DeleteTestAsync(id);
+            if (!result) return NotFound();
+            return NoContent();
+        }
     }
 }

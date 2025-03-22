@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using OnlineTestForCheckingKnowledge.Data;
-using OnlineTestForCheckingKnowledge.Business.Services;
-using AutoMapper;
 using OnlineTestForCheckingKnowledge.Business.Mapping;
-
+using OnlineTestForCheckingKnowledge.Business.Services;
+using OnlineTestForCheckingKnowledge.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +12,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Добавляем сервисы
 builder.Services.AddScoped<ITestService, TestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddLogging(); // Добавляем логирование
 
 // Добавляем контроллеры + Swagger
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -34,6 +33,17 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapControllerRoute(
+        name: "api",
+        pattern: "api/{controller}/{action}/{id?}");
+});
 
 app.Run();
