@@ -1,27 +1,39 @@
+using Microsoft.EntityFrameworkCore;
+using OnlineTestForCheckingKnowledge.Data;
+using OnlineTestForCheckingKnowledge.Business.Services;
+using AutoMapper;
+using OnlineTestForCheckingKnowledge.Business.Mapping;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// Подключаем БД
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Добавляем сервисы
+builder.Services.AddScoped<ITestService, TestService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddLogging(); // Добавляем логирование
+
+// Добавляем контроллеры + Swagger
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Включаем Swagger в режиме разработки
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.Run();
