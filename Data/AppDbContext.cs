@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineTestForCheckingKnowledge.Data.Entities;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OnlineTestForCheckingKnowledge.Data
 {
@@ -10,6 +9,6 @@ namespace OnlineTestForCheckingKnowledge.Data
 
         public DbSet<Test> Tests { get; set; }
         public DbSet<Question> Questions { get; set; }
-        public DbSet<Answer> Answers { get; set; }
+        public DbSet<Answer> Answers { get; set; } 
     }
 }
