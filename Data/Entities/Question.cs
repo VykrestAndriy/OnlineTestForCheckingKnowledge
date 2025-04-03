@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace OnlineTestForCheckingKnowledge.Data.Entities
+﻿namespace OnlineTestForCheckingKnowledge.Data.Entities
 {
     public class Question
     {
