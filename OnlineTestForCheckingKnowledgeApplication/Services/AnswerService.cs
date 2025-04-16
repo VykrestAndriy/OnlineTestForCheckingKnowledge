@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineTestForCheckingKnowledge.Business.DTOs;
-using OnlineTestForCheckingKnowledge.Data;
 using OnlineTestForCheckingKnowledge.Data.Entities;
 using AutoMapper;
+using OnlineTestForCheckingKnowledge.Data;
 
 namespace OnlineTestForCheckingKnowledge.Business.Services
 {

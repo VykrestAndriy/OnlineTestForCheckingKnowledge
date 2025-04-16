@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UserProfile" xml:space="preserve">
-    <value>Профіль користувача</value>
+  <data name="Description" xml:space="preserve">
+    <value>This is the main page of the site.</value>
   </data>
-  <data name="EditProfile" xml:space="preserve">
-    <value>Редагувати профіль</value>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome</value>
   </data>
-  <data name="DeleteProfile" xml:space="preserve">
-    <value>Видалити профіль</value>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn about</value>
   </data>
-  <data name="ProfileList" xml:space="preserve">
-    <value>Список профілів</value>
-  </data>
-  <data name="CreateProfile" xml:space="preserve">
-    <value>Створити профіль</value>
+  <data name="MainHeader" xml:space="preserve">
+    <value>Online test for checking knowledge</value>
   </data>
 </root>

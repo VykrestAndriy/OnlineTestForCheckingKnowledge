@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PackageDetails" xml:space="preserve">
-    <value>Package Details</value>
+  <data name="Description" xml:space="preserve">
+    <value>This is the main page of the site.</value>
   </data>
-  <data name="CreatePackage" xml:space="preserve">
-    <value>Create Package</value>
+  <data name="Welcome" xml:space="preserve">
+    <value>Welcome</value>
   </data>
-  <data name="EditPackage" xml:space="preserve">
-    <value>Edit Package</value>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn about</value>
   </data>
-  <data name="DeletePackage" xml:space="preserve">
-    <value>Delete Package</value>
-  </data>
-  <data name="PackageList" xml:space="preserve">
-    <value>Package List</value>
+  <data name="MainHeader" xml:space="preserve">
+    <value>Online test for checking knowledge</value>
   </data>
 </root>

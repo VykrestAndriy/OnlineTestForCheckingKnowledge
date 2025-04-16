@@ -117,19 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UserName" xml:space="preserve">
-    <value>User Name</value>
+  <data name="Description" xml:space="preserve">
+    <value>Це головна сторінка сайту.</value>
   </data>
-  <data name="Email" xml:space="preserve">
-    <value>Email</value>
+  <data name="Welcome" xml:space="preserve">
+    <value>Ласкаво просимо</value>
   </data>
-  <data name="Password" xml:space="preserve">
-    <value>Password</value>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Дізнайтесь більше про</value>
   </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Confirm Password</value>
-  </data>
-  <data name="Role" xml:space="preserve">
-    <value>Role</value>
+  <data name="MainHeader" xml:space="preserve">
+    <value>Онлайн тест для перевірки знань</value>
   </data>
 </root>

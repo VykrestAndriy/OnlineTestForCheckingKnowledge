@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using OnlineTestForCheckingKnowledge.Data;
 using OnlineTestForCheckingKnowledge.Data.Entities;
+using OnlineTestForCheckingKnowledge.Data;
 
 namespace OnlineTestForCheckingKnowledge.Business.Services
 {
@@ -102,4 +102,3 @@ namespace OnlineTestForCheckingKnowledge.Business.Services
         }
     }
 }
-
