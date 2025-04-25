@@ -10,7 +10,8 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+        b => b.MigrationsAssembly("OnlineTestForCheckingKnowledge.Infrastructure")));
 
 builder.Services.AddScoped<ITestService, TestService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -53,13 +54,19 @@ var localizationOptions = new RequestLocalizationOptions
 app.UseRequestLocalization(localizationOptions);
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); 
-app.UseRouting();
+app.UseStaticFiles();
+app.UseRouting(); 
+
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "startTest",
+    pattern: "Test/StartTest/{testId}",
+    defaults: new { controller = "Test", action = "StartTest" });
 
 app.Run();

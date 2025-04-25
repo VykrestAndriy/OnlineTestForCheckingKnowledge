@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineTestForCheckingKnowledge.Business.DTOs;
 using OnlineTestForCheckingKnowledge.Business.Services;
 using AutoMapper;
+using OnlineTestForCheckingKnowledge.ViewModels;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
 {
-    [Route("api/tests")]
-    [ApiController]
-    public class TestController : ControllerBase
+    public class TestController : Controller
     {
         private readonly ITestService _testService;
         private readonly IMapper _mapper;
@@ -18,52 +18,70 @@ namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTests()
+        public IActionResult StartTest(int testId)
         {
-            var tests = await _testService.GetAllTestsAsync();
-            return Ok(tests);
-        }
+            var test = _testService.GetTestById(testId);
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTestById(int id)
-        {
-            var test = await _testService.GetTestByIdAsync(id);
-            if (test == null) return NotFound();
-            return Ok(test);
+            if (test == null || test.Questions == null || !test.Questions.Any())
+            {
+                return NotFound();
+            }
+
+            var viewModel = new TestViewModel
+            {
+                TestName = test.Name,
+                Questions = test.Questions.ToList(),
+                CurrentQuestionIndex = 0
+            };
+
+            return View("DisplayQuestion", viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTest([FromBody] TestDto testDto)
+        public IActionResult NextQuestion(TestViewModel model, int? selectedAnswerId)
         {
-            if (!ModelState.IsValid)
+            if (model.CurrentQuestion != null && selectedAnswerId.HasValue)
             {
-                return BadRequest(ModelState);
+                model.UserAnswers[model.CurrentQuestion.Id] = selectedAnswerId.Value;
             }
 
-            var createdTest = await _testService.CreateTestAsync(testDto);
-            return CreatedAtAction(nameof(GetTestById), new { id = createdTest.Id }, createdTest);
+            model.CurrentQuestionIndex++;
+
+            if (model.Questions != null && model.CurrentQuestionIndex < model.Questions.Count)
+            {
+                return View("DisplayQuestion", model);
+            }
+            else
+            {
+                return RedirectToAction("TestResult", model.UserAnswers);
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTest(int id, [FromBody] TestDto testDto)
+        public IActionResult TestResult(Dictionary<int, int> userAnswers)
         {
-            if (!ModelState.IsValid)
+            var testId = 1; // Вам потрібно буде якось передавати ID тесту
+            var test = _testService.GetTestById(testId);
+
+            if (test?.Questions == null || !test.Questions.Any())
             {
-                return BadRequest(ModelState);
+                return View("Error"); // Або інша обробка помилки
             }
 
-            var updatedTest = await _testService.UpdateTestAsync(id, testDto);
-            if (updatedTest == null) return NotFound();
-            return Ok(updatedTest);
-        }
+            int correctAnswers = 0;
+            foreach (var question in test.Questions)
+            {
+                if (userAnswers.ContainsKey(question.Id) && question.CorrectAnswerId == userAnswers[question.Id])
+                {
+                    correctAnswers++;
+                }
+            }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTest(int id)
-        {
-            var result = await _testService.DeleteTestAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            ViewBag.TotalQuestions = test.Questions.Count;
+            ViewBag.CorrectAnswers = correctAnswers;
+            ViewBag.Percentage = (double)correctAnswers / test.Questions.Count * 100;
+            ViewBag.TestName = test.Name; // Передаємо назву тесту для відображення
+
+            return View(userAnswers);
         }
     }
 }

@@ -12,6 +12,6 @@ namespace OnlineTestForCheckingKnowledge.Business.Services
         Task<bool> DeleteTestAsync(int id);
         Task<Test> CreateTestAsync(TestDto testDto);
         Task<Test?> UpdateTestAsync(int id, TestDto testDto);
-
+        Test GetTestById(int id);
     }
 }

@@ -1,0 +1,13 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.TestViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2>@Localizer["StartTestTitle"]</h2>
+
+<form asp-action="NextQuestion" method="post">
+    <input type="hidden" asp-for="TestName" />
+    <input type="hidden" asp-for="Questions" value="@System.Text.Json.JsonSerializer.Serialize(Model.Questions)" />
+    <input type="hidden" asp-for="CurrentQuestionIndex" value="0" />
+    <input type="hidden" asp-for="UserAnswers" value="@System.Text.Json.JsonSerializer.Serialize(Model.UserAnswers)" />
+
+    <button type="submit" class="btn btn-primary">@Localizer["StartTestButton"]</button>
+</form>

@@ -3,6 +3,7 @@ using OnlineTestForCheckingKnowledge.Business.DTOs;
 using OnlineTestForCheckingKnowledge.Data;
 using OnlineTestForCheckingKnowledge.Data.Entities;
 using AutoMapper;
+using System.Linq;
 
 namespace OnlineTestForCheckingKnowledge.Business.Services
 {
@@ -25,6 +26,15 @@ namespace OnlineTestForCheckingKnowledge.Business.Services
         public async Task<Test?> GetTestByIdAsync(int id)
         {
             return await _context.Tests.FindAsync(id);
+        }
+
+        public Test GetTestById(int id)
+        {
+            return _context.Tests
+                .Where(t => t.Id == id)
+                .Include(t => t.Questions) 
+                .ThenInclude(q => q.Answers) 
+                .FirstOrDefault();
         }
 
         public async Task<Test> CreateTestAsync(TestDto testDto)
@@ -82,4 +92,3 @@ namespace OnlineTestForCheckingKnowledge.Business.Services
         }
     }
 }
-

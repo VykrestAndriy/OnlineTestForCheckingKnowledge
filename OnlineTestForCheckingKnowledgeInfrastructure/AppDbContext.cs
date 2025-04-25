@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineTestForCheckingKnowledge.Data.Entities;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OnlineTestForCheckingKnowledge.Data
 {

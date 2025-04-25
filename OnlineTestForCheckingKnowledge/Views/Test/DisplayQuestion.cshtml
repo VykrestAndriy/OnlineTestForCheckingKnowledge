@@ -1,0 +1,40 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.TestViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2>@Model.TestName</h2>
+
+@if (Model.CurrentQuestion != null)
+{
+    <h3>@Model.CurrentQuestion.Text</h3>
+
+    <form asp-action="NextQuestion" method="post">
+        <input type="hidden" asp-for="TestName" />
+        <input type="hidden" asp-for="Questions" value="@System.Text.Json.JsonSerializer.Serialize(Model.Questions)" />
+        <input type="hidden" asp-for="CurrentQuestionIndex" value="@Model.CurrentQuestionIndex" />
+        <input type="hidden" asp-for="UserAnswers" value="@System.Text.Json.JsonSerializer.Serialize(Model.UserAnswers)" />
+
+        @if (Model.CurrentAnswers != null && Model.CurrentAnswers.Any())
+        {
+            <ul>
+                @foreach (var answer in Model.CurrentAnswers)
+                {
+                    <li>
+                        <input type="radio" name="@Model.CurrentQuestion.Id" value="@answer.Id" />
+                        <label for="@answer.Id">@answer.Text</label>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>@Localizer["NoAnswers"]</p>
+        }
+
+        <button type="submit" class="btn btn-primary">@Localizer["NextQuestionButton"]</button>
+    </form>
+}
+else
+{
+    <p>@Localizer["TestFinished"]</p>
+    <a asp-action="TestResult" class="btn btn-success">@Localizer["ViewResults"]</a>
+}

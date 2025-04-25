@@ -8,5 +8,7 @@ namespace OnlineTestForCheckingKnowledge.Data.Entities
         public string Text { get; set; } = string.Empty;
         public int TestId { get; set; }
         public Test Test { get; set; } = null!;
+        public List<Answer> Answers { get; set; }
+        public int CorrectAnswerId { get; set; }
     }
 }
