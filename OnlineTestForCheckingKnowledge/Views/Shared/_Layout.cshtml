@@ -27,6 +27,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <select class="form-select" id="languageSelect" onchange="setLanguage(this.value)">
+                                <option value="uk">Українська</option>
+                                <option value="en">English</option>
+                            </select>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -49,4 +57,4 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-</html>  
+</html>

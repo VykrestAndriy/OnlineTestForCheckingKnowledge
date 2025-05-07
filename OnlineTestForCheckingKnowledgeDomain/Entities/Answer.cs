@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using OnlineTestForCheckingKnowledge.Data.Entities; 
 
 namespace OnlineTestForCheckingKnowledge.Data.Entities
 {
-    public class Answer
+    public class Answer : IBaseEntity 
     {
         [Key]
         public int Id { get; set; }

@@ -1,6 +1,9 @@
-﻿namespace OnlineTestForCheckingKnowledge.Data.Entities
+﻿using OnlineTestForCheckingKnowledge.Data.Entities;
+using System.Collections.Generic;
+
+namespace OnlineTestForCheckingKnowledge.Data.Entities
 {
-    public class Test
+    public class Test : IBaseEntity
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;

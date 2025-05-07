@@ -11,8 +11,8 @@ using OnlineTestForCheckingKnowledge.Data;
 namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250422183046_AddCorrectAnswerIdToQuestion")]
-    partial class AddCorrectAnswerIdToQuestion
+    [Migration("20250506164356_AddCorrectAnswerIdToQuestions")]
+    partial class AddCorrectAnswerIdToQuestions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,6 +48,29 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
                     b.HasIndex("QuestionId");
 
                     b.ToTable("Answers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsCorrect = true,
+                            QuestionId = 1,
+                            Text = "Фреймворк для побудови веб-застосунків на основі моделі Model-View-Controller."
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsCorrect = false,
+                            QuestionId = 1,
+                            Text = "Бібліотека класів для роботи з базами даних."
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsCorrect = false,
+                            QuestionId = 1,
+                            Text = "Мова програмування для створення клієнтських сценаріїв."
+                        });
                 });
 
             modelBuilder.Entity("OnlineTestForCheckingKnowledge.Data.Entities.Question", b =>
@@ -58,7 +81,7 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CorrectAnswerId")
+                    b.Property<int?>("CorrectAnswerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("TestId")
@@ -70,9 +93,20 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CorrectAnswerId")
+                        .IsUnique();
+
                     b.HasIndex("TestId");
 
                     b.ToTable("Questions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            TestId = 49,
+                            Text = "Що таке ASP.NET MVC?"
+                        });
                 });
 
             modelBuilder.Entity("OnlineTestForCheckingKnowledge.Data.Entities.Test", b =>
@@ -94,6 +128,14 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tests");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 49,
+                            Name = "Тест 1",
+                            Title = "Тест 1"
+                        });
                 });
 
             modelBuilder.Entity("OnlineTestForCheckingKnowledge.Data.Entities.Answer", b =>
@@ -109,11 +151,18 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Migrations
 
             modelBuilder.Entity("OnlineTestForCheckingKnowledge.Data.Entities.Question", b =>
                 {
+                    b.HasOne("OnlineTestForCheckingKnowledge.Data.Entities.Answer", "CorrectAnswer")
+                        .WithOne()
+                        .HasForeignKey("OnlineTestForCheckingKnowledge.Data.Entities.Question", "CorrectAnswerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("OnlineTestForCheckingKnowledge.Data.Entities.Test", "Test")
                         .WithMany("Questions")
                         .HasForeignKey("TestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CorrectAnswer");
 
                     b.Navigation("Test");
                 });

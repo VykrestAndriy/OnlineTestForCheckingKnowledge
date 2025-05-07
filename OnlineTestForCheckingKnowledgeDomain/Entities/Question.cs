@@ -1,14 +1,15 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using System.Collections.Generic;
 
 namespace OnlineTestForCheckingKnowledge.Data.Entities
 {
-    public class Question
+    public class Question : IBaseEntity 
     {
         public int Id { get; set; }
-        public string Text { get; set; } = string.Empty;
+        public string Text { get; set; }
         public int TestId { get; set; }
-        public Test Test { get; set; } = null!;
+        public Test Test { get; set; }
+        public int? CorrectAnswerId { get; set; }
         public List<Answer> Answers { get; set; }
-        public int CorrectAnswerId { get; set; }
+        public Answer CorrectAnswer { get; set; }
     }
 }

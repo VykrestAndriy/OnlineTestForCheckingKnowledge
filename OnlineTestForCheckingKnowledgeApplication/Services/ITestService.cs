@@ -1,5 +1,7 @@
 ﻿using OnlineTestForCheckingKnowledge.Business.DTOs;
 using OnlineTestForCheckingKnowledge.Data.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OnlineTestForCheckingKnowledge.Business.Services
 {
@@ -13,5 +15,6 @@ namespace OnlineTestForCheckingKnowledge.Business.Services
         Task<Test> CreateTestAsync(TestDto testDto);
         Task<Test?> UpdateTestAsync(int id, TestDto testDto);
         Test GetTestById(int id);
+        void CreateMultipleTests(int numberOfTests);
     }
 }

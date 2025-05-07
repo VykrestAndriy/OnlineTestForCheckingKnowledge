@@ -2,6 +2,7 @@
 using OnlineTestForCheckingKnowledge.Data;
 using OnlineTestForCheckingKnowledge.Data.Entities;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace OnlineTestForCheckingKnowledge.Infrastructure.Repositories
 {
@@ -44,9 +45,9 @@ namespace OnlineTestForCheckingKnowledge.Infrastructure.Repositories
             _context.Answers.Remove(entity);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task<int> SaveChangesAsync() 
         {
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }
