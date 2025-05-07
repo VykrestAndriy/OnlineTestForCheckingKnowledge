@@ -1,0 +1,34 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.Account.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Реєстрація";
+}
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+    <h1 style="text-align: center; margin-bottom: 20px;">@ViewData["Title"]</h1>
+    <div style="width: 300px;">
+        <form asp-controller="Account" asp-action="Register" method="post" style="display: flex; flex-direction: column; align-items: center;">
+            <div asp-validation-summary="All" class="text-danger" style="text-align: center; margin-bottom: 10px;"></div>
+            <div class="form-group" style="width: 100%; margin-bottom: 15px; text-align: center;">
+                <label asp-for="Email" style="display: block;"></label>
+                <input asp-for="Email" class="form-control" style="width: 100%; margin-top: 5px; margin-bottom: 5px;" />
+                <span asp-validation-for="Email" class="text-danger" style="display: block; text-align: left;"></span>
+            </div>
+            <div class="form-group" style="width: 100%; margin-bottom: 15px; text-align: center;">
+                <label asp-for="Password" style="display: block;"></label>
+                <input asp-for="Password" class="form-control" style="width: 100%; margin-top: 5px; margin-bottom: 5px;" />
+                <span asp-validation-for="Password" class="text-danger" style="display: block; text-align: left;"></span>
+            </div>
+            <div class="form-group" style="width: 100%; margin-bottom: 15px; text-align: center;">
+                <label asp-for="ConfirmPassword" style="display: block;"></label>
+                <input asp-for="ConfirmPassword" class="form-control" style="width: 100%; margin-top: 5px; margin-bottom: 5px;" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger" style="display: block; text-align: left;"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 150px;">Зареєструватися</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

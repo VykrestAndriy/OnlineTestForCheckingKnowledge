@@ -17,6 +17,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public IActionResult Index()
     {
         return View();
@@ -33,12 +34,12 @@ public class HomeController : Controller
         Response.Cookies.Append(
             CookieRequestCultureProvider.DefaultCookieName,
             CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-           new CookieOptions
-           {
-               Expires = DateTimeOffset.UtcNow.AddYears(1),
-               Secure = true 
-           }
-    );
+            new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddYears(1),
+                Secure = true
+            }
+        );
 
         return LocalRedirect(returnUrl);
     }

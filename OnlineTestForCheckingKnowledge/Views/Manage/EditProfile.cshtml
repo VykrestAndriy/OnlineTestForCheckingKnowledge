@@ -1,0 +1,41 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.Manage.EditProfileViewModel
+@{
+    ViewData["Title"] = "Редагувати профіль";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <h1>@ViewData["Title"]</h1>
+        <hr />
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName"></label>
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3 d-flex align-items-center">
+                <button type="submit" class="btn btn-primary flex-grow-1 mr-2">Зберегти</button>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-secondary flex-grow-1">Назад</a>
+            </div>
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

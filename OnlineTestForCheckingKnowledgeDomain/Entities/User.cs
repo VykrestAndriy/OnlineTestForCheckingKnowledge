@@ -1,19 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace OnlineTestForCheckingKnowledge.Data.Entities
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
         [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public string FirstName { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public string Email { get; set; } = string.Empty;
+        public string LastName { get; set; }
 
         public List<UserTestResult> TestResults { get; set; } = new();
     }
