@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineTestForCheckingKnowledge.Data.Entities;
 using OnlineTestForCheckingKnowledge.ViewModels.Admin;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -196,5 +197,96 @@ public class AdminController : Controller
             }
         }
         return RedirectToAction(nameof(UserList));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> LockUser(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return NotFound();
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        await _userManager.SetLockoutEnabledAsync(user, true);
+        await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+
+        return RedirectToAction(nameof(UserList));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UnlockUser(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return NotFound();
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        await _userManager.SetLockoutEnabledAsync(user, false);
+        await _userManager.SetLockoutEndDateAsync(user, null);
+
+        return RedirectToAction(nameof(UserList));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditRole(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return NotFound();
+        }
+
+        var role = await _roleManager.FindByIdAsync(id);
+        if (role == null)
+        {
+            return NotFound();
+        }
+
+        var model = new EditRoleViewModel { Id = role.Id, NewRoleName = role.Name };
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditRole(EditRoleViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var role = await _roleManager.FindByIdAsync(model.Id);
+            if (role == null)
+            {
+                return NotFound();
+            }
+
+            role.Name = model.NewRoleName;
+            var result = await _roleManager.UpdateAsync(role);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(RoleList));
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(model);
+            }
+        }
+        return View(model);
     }
 }

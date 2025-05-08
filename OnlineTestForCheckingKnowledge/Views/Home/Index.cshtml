@@ -1,8 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    ViewData["Title"] = @Localizer["Home Page"];
 }
-
-@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 <div class="text-center">
     <h1>@Localizer["Online test for cheking knowledge"]</h1>
@@ -31,41 +30,40 @@
     <script>
         document.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                console.log("Сторінка відновлена з кешу, викликаємо loadAccountInfo");
+                console.log("@Localizer["Сторінка відновлена з кешу, викликаємо loadAccountInfo"]");
                 loadAccountInfo();
             }
         });
 
         $(document).ready(function() {
-            console.log("DOM готовий, викликаємо loadAccountInfo");
+            console.log("@Localizer["DOM готовий, викликаємо loadAccountInfo"]");
             loadAccountInfo();
         });
 
         function loadAccountInfo() {
-            console.log("Викликано loadAccountInfo");
-            // Припустимо, що у вас є API endpoint для отримання інформації про відображення кнопок
+            console.log("@Localizer["Викликано loadAccountInfo"]");
             fetch('/api/Account/AccountButtonsInfo')
                 .then(response => response.json())
                 .then(data => {
                     const accountButtonsContainer = document.getElementById('accountButtons');
-                    accountButtonsContainer.innerHTML = ''; // Очищаємо попередні кнопки
+                    accountButtonsContainer.innerHTML = ''; 
 
                     if (data.showPasswordButton) {
                         const passwordButton = document.createElement('button');
-                        passwordButton.textContent = 'Пароль';
-                        passwordButton.classList.add('btn', 'btn-primary', 'mr-2'); // Додайте класи Bootstrap за потреби
+                        passwordButton.textContent = '@Localizer["Пароль"]';
+                        passwordButton.classList.add('btn', 'btn-primary', 'mr-2'); 
                         accountButtonsContainer.appendChild(passwordButton);
                     }
 
                     if (data.showAccountButton) {
                         const accountButton = document.createElement('button');
-                        accountButton.textContent = 'Аккаунт';
-                        accountButton.classList.add('btn', 'btn-secondary'); // Додайте класи Bootstrap за потреби
+                        accountButton.textContent = '@Localizer["Аккаунт"]';
+                        accountButton.classList.add('btn', 'btn-secondary'); 
                         accountButtonsContainer.appendChild(accountButton);
                     }
                 })
                 .catch(error => {
-                    console.error('Помилка отримання інформації про кнопки:', error);
+                    console.error('@Localizer["Помилка отримання інформації про кнопки:"]', error);
                 });
         }
     </script>

@@ -1,10 +1,11 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+<!DOCTYPE html>
+<html lang="uk">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Language" content="uk">
-    <title>@ViewData["Title"] - OnlineTestForCheckingKnowledge</title>
+    <title>@ViewData["Title"] - @Localizer["OnlineTestForCheckingKnowledge"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineTestForCheckingKnowledge.styles.css" asp-append-version="true" />
@@ -13,7 +14,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">OnlineTestForCheckingKnowledge</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["OnlineTestForCheckingKnowledge"]</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,22 +22,22 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Головна"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Конфіденційність</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Конфіденційність"]</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Manage" asp-action="EditProfile" title="Керувати">Профіль</a>
+                                <a class="nav-link text-dark" asp-controller="Manage" asp-action="EditProfile" title="@Localizer["Керувати"]">@Localizer["Профіль"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Manage" asp-action="ChangePassword" title="Змінити пароль">Пароль</a>
+                                <a class="nav-link text-dark" asp-controller="Manage" asp-action="ChangePassword" title="@Localizer["Змінити пароль"]">@Localizer["Пароль"]</a>
                             </li>
                             <li class="nav-item">
                                 <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">Вийти</button>
+                                    <button type="submit" class="nav-link btn btn-link text-dark">@Localizer["Вийти"]</button>
                                 </form>
                             </li>
                         }
@@ -44,8 +45,8 @@
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <select class="form-select" id="languageSelect" onchange="setLanguage(this.value)">
-                                <option value="uk">Українська</option>
-                                <option value="en">English</option>
+                                <option value="uk" selected>@Localizer["Українська"]</option>
+                                <option value="en">@Localizer["English"]</option>
                             </select>
                         </li>
                     </ul>
@@ -61,7 +62,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - OnlineTestForCheckingKnowledge - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - @Localizer["OnlineTestForCheckingKnowledge"] - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
         </div>
     </footer>
 
@@ -72,3 +73,23 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    function setLanguage(language) {
+        document.cookie = `culture=${language}|uiculture=${language};path=/;`;
+        window.location.reload();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const langSelect = document.getElementById('languageSelect');
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith('culture=')) {
+                const langCode = cookie.substring('culture='.length, cookie.indexOf('|'));
+                langSelect.value = langCode;
+                break;
+            }
+        }
+    });
+</script>

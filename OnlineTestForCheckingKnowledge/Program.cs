@@ -66,7 +66,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     var supportedCultures = new[]
     {
-        new CultureInfo("uk")
+        new CultureInfo("uk-UA"),
+        new CultureInfo("en-US")
     };
 
     options.DefaultRequestCulture = new RequestCulture("uk-UA");

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using OnlineTestForCheckingKnowledge.Data.Entities;
 using OnlineTestForCheckingKnowledge.ViewModels.Account;
 using System.Threading.Tasks;
@@ -11,14 +12,15 @@ namespace OnlineTestForCheckingKnowledge.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSender = emailSender;
         }
 
-        // Ця дія тепер доступна за маршрутом /api/Account/AccountButtonsInfo
         [HttpGet("AccountButtonsInfo")]
         public IActionResult AccountButtonsInfo()
         {
@@ -97,10 +99,11 @@ namespace OnlineTestForCheckingKnowledge.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account"); // Змінено перенаправлення на сторінку логіну
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             return View();
@@ -116,8 +119,8 @@ namespace OnlineTestForCheckingKnowledge.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    ViewBag.Message = "Інструкції для відновлення паролю були надіслані на вашу електронну пошту.";
-                    return View("ForgotPasswordConfirmation");
+                    TempData["ForgotPasswordMessage"] = "Інструкції для відновлення паролю були надіслані на вашу електронну пошту.";
+                    return RedirectToAction("ForgotPasswordConfirmation");
                 }
 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -127,29 +130,30 @@ namespace OnlineTestForCheckingKnowledge.Controllers
                     new { userId = user.Id, code = code },
                     protocol: HttpContext.Request.Scheme);
 
-                var emailSender = HttpContext.RequestServices.GetRequiredService<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
-                await emailSender.SendEmailAsync(
+                await _emailSender.SendEmailAsync(
                     model.Email,
                     "Відновлення паролю",
                     $"Будь ласка, перейдіть за цим посиланням, щоб скинути ваш пароль: <a href='{callbackUrl}'>скинути пароль</a>");
 
-                ViewBag.Message = "Інструкції для відновлення паролю були надіслані на вашу електронну пошту.";
-                return View("ForgotPasswordConfirmation");
+                TempData["ForgotPasswordMessage"] = "Інструкції для відновлення паролю були надіслані на вашу електронну пошту.";
+                return RedirectToAction("ForgotPasswordConfirmation");
             }
 
             return View(model);
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
-            return code == null ? View("Error") : View();
+            return code == null ? View("Error") : View(new ResetPasswordViewModel { Code = code });
         }
 
         [HttpPost]
@@ -183,6 +187,7 @@ namespace OnlineTestForCheckingKnowledge.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
             return View();
