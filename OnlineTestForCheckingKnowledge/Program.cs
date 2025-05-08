@@ -124,41 +124,57 @@ async Task CreateRolesAndAdminUser(IServiceProvider serviceProvider)
     var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
 
+    // Створення ролі "Admin", якщо її немає
     var adminRoleExists = await RoleManager.RoleExistsAsync("Admin");
     if (!adminRoleExists)
     {
         await RoleManager.CreateAsync(new IdentityRole("Admin"));
     }
 
-    var adminUser = await UserManager.FindByEmailAsync("admin@example.com");
+    // Знайти користувача за email
+    var adminUser = await UserManager.FindByEmailAsync("newadmin@example.com");
 
-    if (adminUser == null)
+    if (adminUser != null)
     {
-        var newAdminUser = new User
+        // Перевірити, чи користувач вже в ролі "Admin"
+        if (!await UserManager.IsInRoleAsync(adminUser, "Admin"))
         {
-            UserName = "admin",
-            Email = "admin@example.com",
-            EmailConfirmed = true,
-            FirstName = "Admin"
-        };
-        var createResult = await UserManager.CreateAsync(newAdminUser, "Admin123!");
-        if (createResult.Succeeded)
-        {
-            await UserManager.AddToRoleAsync(newAdminUser, "Admin");
+            // Додати користувача до ролі "Admin"
+            var addToRoleResult = await UserManager.AddToRoleAsync(adminUser, "Admin");
+            if (addToRoleResult.Succeeded)
+            {
+                Console.WriteLine("Користувача newadmin@example.com додано до ролі Admin.");
+            }
+            else
+            {
+                foreach (var error in addToRoleResult.Errors)
+                {
+                    Console.WriteLine($"Помилка додавання до ролі: {error.Description}");
+                }
+            }
         }
         else
         {
-            foreach (var error in createResult.Errors)
+            Console.WriteLine("Користувач newadmin@example.com вже має роль Admin.");
+        }
+
+        // **Тимчасово змінити пароль (лише для тестування!)**
+        var resetToken = await UserManager.GeneratePasswordResetTokenAsync(adminUser);
+        var changePasswordResult = await UserManager.ResetPasswordAsync(adminUser, resetToken, "YourNewStrongPassword!"); // Замініть на свій пароль
+        if (changePasswordResult.Succeeded)
+        {
+            Console.WriteLine("Пароль для newadmin@example.com тимчасово змінено на YourNewStrongPassword!");
+        }
+        else
+        {
+            foreach (var error in changePasswordResult.Errors)
             {
-                Console.WriteLine($"Помилка створення адміністратора: {error.Description}");
+                Console.WriteLine($"Помилка зміни пароля: {error.Description}");
             }
         }
     }
     else
     {
-        if (!await UserManager.IsInRoleAsync(adminUser, "Admin"))
-        {
-            await UserManager.AddToRoleAsync(adminUser, "Admin");
-        }
+        Console.WriteLine("Користувача newadmin@example.com не знайдено.");
     }
 }

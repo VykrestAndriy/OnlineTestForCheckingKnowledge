@@ -9,6 +9,22 @@
     <h1 class="display-4">@Localizer["Welcome"]</h1>
     <p>@Localizer["LearnMore"] <a href="https://learn.microsoft.com/aspnet/core">ASP.NET Core</a>.</p>
 
+    @if (User.Identity.IsAuthenticated)
+    {
+        @if (User.IsInRole("Admin"))
+        {
+            <p class="alert alert-success">@Localizer["Ви увійшли як адміністратор."]</p>
+        }
+        else
+        {
+            <p class="alert alert-info">@Localizer["Ви увійшли як звичайний користувач."]</p>
+        }
+    }
+    else
+    {
+        <p class="alert alert-warning">@Localizer["Ви не увійшли в систему."]</p>
+    }
+
     <p>
         <form asp-controller="Test" asp-action="CreateTests" method="post">
             <button type="submit" class="btn btn-success">@Localizer["Create tests"]</button>
@@ -46,19 +62,19 @@
                 .then(response => response.json())
                 .then(data => {
                     const accountButtonsContainer = document.getElementById('accountButtons');
-                    accountButtonsContainer.innerHTML = ''; 
+                    accountButtonsContainer.innerHTML = '';
 
                     if (data.showPasswordButton) {
                         const passwordButton = document.createElement('button');
                         passwordButton.textContent = '@Localizer["Пароль"]';
-                        passwordButton.classList.add('btn', 'btn-primary', 'mr-2'); 
+                        passwordButton.classList.add('btn', 'btn-primary', 'mr-2');
                         accountButtonsContainer.appendChild(passwordButton);
                     }
 
                     if (data.showAccountButton) {
                         const accountButton = document.createElement('button');
                         accountButton.textContent = '@Localizer["Аккаунт"]';
-                        accountButton.classList.add('btn', 'btn-secondary'); 
+                        accountButton.classList.add('btn', 'btn-secondary');
                         accountButtonsContainer.appendChild(accountButton);
                     }
                 })

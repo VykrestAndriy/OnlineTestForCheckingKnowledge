@@ -76,13 +76,18 @@ namespace OnlineTestForCheckingKnowledge.Controllers
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    if (Url.IsLocalUrl(returnUrl))
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("UserList", "Admin"); // Перенаправлення адміністратора на список користувачів
+                    }
+                    else if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home"); // Перенаправлення звичайних користувачів на головну
                     }
                 }
                 else
