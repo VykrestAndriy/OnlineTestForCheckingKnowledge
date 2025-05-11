@@ -1,0 +1,19 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.Admin.EditRoleViewModel
+
+@{
+    ViewData["Title"] = "Редагування ролі";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="EditRole" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="NewRoleName"></label>
+        <input asp-for="NewRoleName" class="form-control" />
+        <span asp-validation-for="NewRoleName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="RoleList" class="btn btn-secondary">Скасувати</a>
+</form>

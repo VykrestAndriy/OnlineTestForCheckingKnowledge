@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineTestForCheckingKnowledge.Business.DTOs;
 using OnlineTestForCheckingKnowledge.Business.Services;
 using AutoMapper;
+using OnlineTestForCheckingKnowledge.ViewModels;
+using System.Linq;
 
 namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
 {
-    [Route("api/tests")]
-    [ApiController]
-    public class TestController : ControllerBase
+    public class TestController : Controller
     {
         private readonly ITestService _testService;
         private readonly IMapper _mapper;
@@ -18,52 +17,100 @@ namespace OnlineTestForCheckingKnowledge.Presentation.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllTests()
+        public IActionResult Index()
         {
-            var tests = await _testService.GetAllTestsAsync();
-            return Ok(tests);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTestById(int id)
-        {
-            var test = await _testService.GetTestByIdAsync(id);
-            if (test == null) return NotFound();
-            return Ok(test);
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTest([FromBody] TestDto testDto)
+        public IActionResult CreateTests(int numberOfTests = 5)
         {
-            if (!ModelState.IsValid)
+            var allExistingTests = _testService.GetAllTestsAsync().Result;
+            foreach (var test in allExistingTests)
             {
-                return BadRequest(ModelState);
+                _testService.DeleteTestAsync(test.Id).Wait();
             }
 
-            var createdTest = await _testService.CreateTestAsync(testDto);
-            return CreatedAtAction(nameof(GetTestById), new { id = createdTest.Id }, createdTest);
+            _testService.CreateMultipleTests(numberOfTests);
+            return RedirectToAction("SelectListOfTests");
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTest(int id, [FromBody] TestDto testDto)
+        public IActionResult SelectListOfTests()
         {
-            if (!ModelState.IsValid)
+            var allTests = _testService.GetAllTestsAsync().Result;
+            return View(allTests);
+        }
+
+        [HttpGet("StartTest/{testId:int}")]
+        public IActionResult StartTest(int testId)
+        {
+            var test = _testService.GetTestById(testId);
+
+            if (test == null || test.Questions == null || !test.Questions.Any())
             {
-                return BadRequest(ModelState);
+                TempData["ErrorMessage"] = "Test not found or does not contain questions.";
+                return RedirectToAction("SelectListOfTests");
             }
 
-            var updatedTest = await _testService.UpdateTestAsync(id, testDto);
-            if (updatedTest == null) return NotFound();
-            return Ok(updatedTest);
+            var viewModel = new TestViewModel
+            {
+                TestName = test.Title,
+                Questions = test.Questions.ToList(),
+                CurrentQuestionIndex = 0,
+                UserAnswers = new Dictionary<int, int>()
+            };
+
+            return View("DisplayQuestion", viewModel);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTest(int id)
+        [HttpPost]
+        public IActionResult NextQuestion(TestViewModel model, int? selectedAnswerId)
         {
-            var result = await _testService.DeleteTestAsync(id);
-            if (!result) return NotFound();
-            return NoContent();
+            if (model.CurrentQuestion != null && selectedAnswerId.HasValue)
+            {
+                model.UserAnswers[model.CurrentQuestion.Id] = selectedAnswerId.Value;
+            }
+
+            if (model.Questions != null && model.CurrentQuestionIndex < model.Questions.Count - 1)
+            {
+                model.CurrentQuestionIndex++;
+                return View("DisplayQuestion", model);
+            }
+            else if (model.Questions != null && model.CurrentQuestionIndex == model.Questions.Count - 1)
+            {
+                return RedirectToAction("Index", "Home"); // Переконайтеся, що "Home" - це назва вашого головного контролера
+            }
+            else
+            {
+                return RedirectToAction("SelectListOfTests");
+            }
+        }
+
+        public IActionResult TestResult(Dictionary<int, int> userAnswers)
+        {
+            var testId = 1;
+            var test = _testService.GetTestById(testId);
+
+            if (test?.Questions == null || !test.Questions.Any())
+            {
+                return View("Error");
+            }
+
+            int correctAnswers = 0;
+            foreach (var question in test.Questions)
+            {
+                if (userAnswers.ContainsKey(question.Id) && question.CorrectAnswerId == userAnswers[question.Id])
+                {
+                    correctAnswers++;
+                }
+            }
+
+            ViewBag.TotalQuestions = test.Questions.Count;
+            ViewBag.CorrectAnswers = correctAnswers;
+            ViewBag.Percentage = (double)correctAnswers / test.Questions.Count * 100;
+            ViewBag.TestName = test.Name;
+
+            return View(userAnswers);
         }
     }
 }

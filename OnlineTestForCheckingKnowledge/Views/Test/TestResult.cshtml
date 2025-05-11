@@ -1,0 +1,18 @@
+﻿@model Dictionary<int, int>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+<h2>@ViewBag.TestName - @Localizer["TestResultTitle"]</h2>
+
+<p>@Localizer["YourAnswers"]:</p>
+<ul>
+    @foreach (var userAnswer in Model)
+    {
+        <li>@Localizer["QuestionId"]: @userAnswer.Key, @Localizer["AnswerId"]: @userAnswer.Value</li>
+    }
+</ul>
+
+<p>@Localizer["TotalQuestions"]: @ViewBag.TotalQuestions</p>
+<p>@Localizer["CorrectAnswers"]: @ViewBag.CorrectAnswers</p>
+<p>@Localizer["Percentage"]: @ViewBag.Percentage%</p>
+
+<a asp-action="Index" asp-controller="Home" class="btn btn-secondary">@Localizer["BackToHome"]</a>

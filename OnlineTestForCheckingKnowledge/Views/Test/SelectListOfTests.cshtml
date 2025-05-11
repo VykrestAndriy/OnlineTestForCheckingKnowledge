@@ -1,0 +1,66 @@
+﻿@model IEnumerable<OnlineTestForCheckingKnowledge.Data.Entities.Test>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Select a Test";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="test-selection">
+        @foreach (var test in Model)
+        {
+            <a href="@Url.Action("StartTest", "Test", new { testId = test.Id })" class="test-button">
+                @test.Title
+            </a>
+        }
+    </div>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">@Localizer["Back"]</a>
+}
+else
+{
+    <p>@Localizer["NoTestsAvailable"]</p>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">@Localizer["Back"]</a>
+}
+
+<style>
+    body {
+        background-color: #3993AD;
+    }
+
+    .test-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .test-button {
+        display: inline-block;
+        width: 100%;
+        padding: 10px 15px;
+        border: 2px solid #ffc107;
+        background-color: #fffacd;
+        color: #000000;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+        .test-button:hover {
+            background-color: #ffe082;
+            color: #333;
+            border-color: #e0a800;
+        }
+</style>

@@ -1,0 +1,19 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.Admin.EditUserRolesViewModel
+
+<h2>Редагування ролей для користувача: @Model.UserName</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="UserId" />
+    <div class="form-group">
+        @for (var i = 0; i < Model.AllRoles.Count; i++)
+        {
+            <div class="form-check">
+                <input asp-for="AllRoles[i].IsSelected" class="form-check-input" />
+                <label asp-for="AllRoles[i].IsSelected" class="form-check-label">@Model.AllRoles[i].RoleName</label>
+                <input type="hidden" asp-for="AllRoles[i].RoleName" />
+            </div>
+        }
+    </div>
+    <button type="submit" class="btn btn-primary">Зберегти зміни</button>
+    <a asp-action="UserList" class="btn btn-secondary">Скасувати</a>
+</form>

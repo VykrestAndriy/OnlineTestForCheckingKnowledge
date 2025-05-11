@@ -1,0 +1,57 @@
+﻿@model OnlineTestForCheckingKnowledge.ViewModels.TestViewModel
+
+@{
+    ViewData["Title"] = @Model.TestName;
+}
+
+<h1>@Model.TestName</h1>
+
+@if (Model.Questions != null && Model.Questions.Any() && Model.CurrentQuestionIndex < Model.Questions.Count)
+{
+    var currentQuestion = Model.Questions[Model.CurrentQuestionIndex];
+    <h2>@currentQuestion.Text</h2>
+
+    @if (currentQuestion.Answers != null && currentQuestion.Answers.Any())
+    {
+        <form method="post" asp-controller="Test" asp-action="NextQuestion">
+            <input type="hidden" asp-for="TestName" />
+            <input type="hidden" asp-for="CurrentQuestionIndex" />
+            <input type="hidden" asp-for="UserAnswers" value="@System.Text.Json.JsonSerializer.Serialize(Model.UserAnswers)" />
+            <input type="hidden" asp-for="CurrentQuestion.Id" value="@currentQuestion.Id" />
+
+            <ul>
+                @foreach (var answer in currentQuestion.Answers)
+                {
+                    <li>
+                        <input type="radio" id="answer_@answer.Id" name="selectedAnswerId" value="@answer.Id" onchange="document.getElementById('nextButton').style.display = 'block';" />
+                        <label for="answer_@answer.Id">@answer.Text</label>
+                    </li>
+                }
+            </ul>
+            <button type="submit" id="nextButton" class="btn btn-primary" style="display:none;">
+                @if (Model.CurrentQuestionIndex == Model.Questions.Count - 1)
+                {
+                    <span>Finish Test</span>
+                }
+                else
+                {
+                    <span>Next Question</span>
+                }
+            </button>
+        </form>
+    }
+    else
+    {
+        <p>This question has no answers.</p>
+        <form method="post" asp-controller="Test" asp-action="NextQuestion">
+            <input type="hidden" asp-for="TestName" />
+            <input type="hidden" asp-for="CurrentQuestionIndex" />
+            <input type="hidden" asp-for="UserAnswers" value="@System.Text.Json.JsonSerializer.Serialize(Model.UserAnswers)" />
+            <button type="submit" class="btn btn-primary">Next Question</button>
+        </form>
+    }
+}
+else
+{
+    <p>This test has no questions.</p>
+}
